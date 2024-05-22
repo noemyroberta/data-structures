@@ -1,27 +1,27 @@
 #include <stdio.h>
+#include <stdlib.h>
+
 struct array {
     int capacity;
     int size;
-    int v[];
-};
-
-void push(int i, struct array arr[]) {
-    if (arr->size == arr->capacity) {
-        int newArray[2*arr->capacity];
-        for (int j=0; j < arr->size-1; j++) {
-            newArray[j] = arr->v[j];
-        }
-    }
-    arr->v[arr->size] = i;
-    arr->size = arr->size + 1;
+    int *arr;
 }
 
-int main(void)
-{
-    struct array arr;
-    arr.capacity = 2;
-    arr.size = 0;
-    arr.v[arr.capacity];
-    
+push(int value, struct array *v) {
+    if (v->size == v->capacity) {
+        v->capacity = 2 * v->capacity;
+        v->arr = (void *)realloc(v->arr, v->capacity);        
+    }
+    v->arr[v->size] = value;
+    v->size++; 
+}
+
+int main(void) {
+    struct array v;
+    v.capacity = 2;
+    v.size = 0;
+    v.arr = (int *)calloc(v.capacity, sizeof(int));
+
+    free(v.arr);
     return 0;
 }
