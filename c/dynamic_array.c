@@ -33,7 +33,7 @@ int insert(int index, int value, struct array *v) {
     return -1;
   } else if (*(v->arr + index) != 0) {
     for (size_t i = v->size; i > index; i--) {
-      v->arr[i] = v->arr[i - 1];
+      v->arr[i] = v->arr[i-1];
     }
   }
   v->arr[index] = value;
@@ -106,6 +106,10 @@ int findValue(int value, struct array *v) {
     }
   }
   return -1;
+}
+
+int prepend(int value, struct array *v) {
+  return insert(0, value, v);
 }
 
 int main(void) {
