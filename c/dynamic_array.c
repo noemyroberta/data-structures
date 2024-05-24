@@ -42,6 +42,7 @@ int insert(int index, int value, struct array *v) {
 }
 
 void show(struct array *v) {
+  printf("\n");
   printf("Capacity: %d ", v->capacity);
   printf("Size: %d ", v->size);
   printf("Values: ");
@@ -72,7 +73,7 @@ int at(int index, struct array *v) {
 int delete(int index, struct array *v) {
   if (isOutOfRange(index, v)) {
     return -1;
-  } else if (index != v->size-1) {
+  } else if (index != v->size - 1) {
     for (size_t i = index; i < v->size; i++) {
       v->arr[i] = v->arr[i + 1];
     }
@@ -82,20 +83,34 @@ int delete(int index, struct array *v) {
   return 0;
 }
 
+int removeValue(int value, struct array *v) {
+  if (isEmpty(v)) {
+    return -1;
+  }
+  for (size_t i = 0; i < v->capacity; i++) {
+    if (*(v->arr + i) == value) {
+      *(v->arr + i) = 0;
+      v->size--;
+    }
+  }
+  return 0;
+}
+
 int main(void) {
   struct array v;
   v.capacity = 2;
   v.size = 0;
   v.arr = (int *)calloc(v.capacity, sizeof(int));
-  push(12, &v);
-  push(13, &v);
-  push(14, &v);
+  push(43, &v);
+  push(43, &v);
+  push(43, &v);
   show(&v);
   int result = insert(3, 43, &v);
   printf("\ninsert result %d", result);
   show(&v);
-  delete (1, &v);
+  removeValue(43, &v);
   show(&v);
+  printf("%d",removeValue(43, &v));
   free(v.arr);
   return 0;
 }
