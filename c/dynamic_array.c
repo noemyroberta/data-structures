@@ -7,6 +7,12 @@ struct array {
   int *arr;
 };
 
+static void resize(int newCapacity, struct array *v) {
+  printf("Resized");
+  v->capacity = newCapacity;
+  v->arr = (void *)realloc(v->arr, v->capacity);
+}
+
 int isFull(struct array *v) { return v->size == v->capacity; }
 
 int isOutOfRange(int index, struct array *v) {
@@ -21,8 +27,7 @@ int size(struct array *v) { return v->size; }
 
 void push(int value, struct array *v) {
   if (isFull(v)) {
-    v->capacity = 2 * v->capacity;
-    v->arr = (void *)realloc(v->arr, v->capacity);
+    resize(2 * v->capacity, v);
   }
   v->arr[v->size] = value;
   v->size++;
@@ -33,7 +38,7 @@ int insert(int index, int value, struct array *v) {
     return -1;
   } else if (*(v->arr + index) != 0) {
     for (size_t i = v->size; i > index; i--) {
-      v->arr[i] = v->arr[i-1];
+      v->arr[i] = v->arr[i - 1];
     }
   }
   v->arr[index] = value;
@@ -60,6 +65,9 @@ int pop(struct array *v) {
   int lastValue = *(v->arr + lastIndex);
   *(v->arr + lastIndex) = 0;
   v->size--;
+  if (v->size == (v->capacity / 4)) {
+    resize(v->capacity / 2, v);
+  }
   return lastValue;
 }
 
@@ -108,27 +116,19 @@ int findValue(int value, struct array *v) {
   return -1;
 }
 
-int prepend(int value, struct array *v) {
-  return insert(0, value, v);
-}
+int prepend(int value, struct array *v) { return insert(0, value, v); }
 
 int main(void) {
   struct array v;
   v.capacity = 2;
   v.size = 0;
   v.arr = (int *)calloc(v.capacity, sizeof(int));
+  show(&v);
   push(13, &v);
   push(23, &v);
-  push(43, &v);
   show(&v);
-  int result = insert(3, 43, &v);
-  printf("\ninsert result %d", result);
+  pop(&v);
   show(&v);
-  printf("\nf %d", findValue(43, &v));
-  removeValue(43, &v);
-  show(&v);
-  printf("\nr %d", removeValue(43, &v));
-  printf("\nf %d", findValue(43, &v));
   free(v.arr);
   return 0;
 }
