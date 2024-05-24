@@ -7,8 +7,20 @@ struct array {
   int *arr;
 };
 
+int isFull(struct array *v) { return v->size == v->capacity; }
+
+int isOutOfRange(int index, struct array *v) {
+  return index < 0 || index >= v->capacity;
+}
+
+int isEmpty(struct array *v) { return v->size == 0; }
+
+int capacity(struct array *v) { return v->capacity; }
+
+int size(struct array *v) { return v->size; }
+
 void push(int value, struct array *v) {
-  if (v->size == v->capacity) {
+  if (isFull(v)) {
     v->capacity = 2 * v->capacity;
     v->arr = (void *)realloc(v->arr, v->capacity);
   }
@@ -17,10 +29,10 @@ void push(int value, struct array *v) {
 }
 
 int insert(int index, int value, struct array *v) {
-  if (v->size == v->capacity) {
+  if (isFull(v)) {
     return -1;
   } else if (*(v->arr + index) != 0) {
-    for (size_t i = v->capacity; i > index; i--) {
+    for (size_t i = v->size; i > index; i--) {
       v->arr[i] = v->arr[i - 1];
     }
   }
@@ -28,12 +40,6 @@ int insert(int index, int value, struct array *v) {
   v->size++;
   return 0;
 }
-
-int isEmpty(struct array *v) { return v->size == 0; }
-
-int capacity(struct array *v) { return v->capacity; }
-
-int size(struct array *v) { return v->size; }
 
 void show(struct array *v) {
   printf("Capacity: %d ", v->capacity);
@@ -57,10 +63,23 @@ int pop(struct array *v) {
 }
 
 int at(int index, struct array *v) {
-  if (index < 0 || index >= v->capacity) {
+  if (isOutOfRange(index, v)) {
     return -1;
   }
   return *(v->arr + index);
+}
+
+int delete(int index, struct array *v) {
+  if (isOutOfRange(index, v)) {
+    return -1;
+  } else if (index != v->size-1) {
+    for (size_t i = index; i < v->size; i++) {
+      v->arr[i] = v->arr[i + 1];
+    }
+  }
+  *(v->arr + v->size - 1) = 0;
+  v->size--;
+  return 0;
 }
 
 int main(void) {
@@ -72,19 +91,10 @@ int main(void) {
   push(13, &v);
   push(14, &v);
   show(&v);
-  int result = insert(1, 43, &v);
-  //   int val = at(1, &v);
-  //   if (val == -1) {
-  //     printf("\nIndex out of range, response: %d\n", val);
-  //   } else {
-  //     printf("\nGetted value: %d\n", val);
-  //   }
-  //   int lastValue = pop(&v);
-  //   if (lastValue == -1) {
-  //     printf("The heap is empty!");
-  //   } else {
-  //     printf("Last value: %d", lastValue);
-  //   }
+  int result = insert(3, 43, &v);
+  printf("\ninsert result %d", result);
+  show(&v);
+  delete (1, &v);
   show(&v);
   free(v.arr);
   return 0;
