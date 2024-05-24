@@ -96,21 +96,35 @@ int removeValue(int value, struct array *v) {
   return 0;
 }
 
+int findValue(int value, struct array *v) {
+  if (isEmpty(v)) {
+    return -1;
+  }
+  for (size_t i = 0; i < v->size; i++) {
+    if (*(v->arr + i) == value) {
+      return i;
+    }
+  }
+  return -1;
+}
+
 int main(void) {
   struct array v;
   v.capacity = 2;
   v.size = 0;
   v.arr = (int *)calloc(v.capacity, sizeof(int));
-  push(43, &v);
-  push(43, &v);
+  push(13, &v);
+  push(23, &v);
   push(43, &v);
   show(&v);
   int result = insert(3, 43, &v);
   printf("\ninsert result %d", result);
   show(&v);
+  printf("\nf %d", findValue(43, &v));
   removeValue(43, &v);
   show(&v);
-  printf("%d",removeValue(43, &v));
+  printf("\nr %d", removeValue(43, &v));
+  printf("\nf %d", findValue(43, &v));
   free(v.arr);
   return 0;
 }
